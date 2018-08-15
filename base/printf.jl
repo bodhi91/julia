@@ -862,8 +862,8 @@ function decode_oct(d::Integer)
     digits = DIGITSs[Threads.threadid()]
     @handle_zero x digits
     pt = i = div((sizeof(x)<<3)-leading_zeros(x)+2,3)
-    while i > 0
-        digits[i] = '0'+(x&0x7)
+    @inbounds while i > 0
+        digits[i] = 48+(x&0x7)
         x >>= 3
         i -= 1
     end
@@ -875,8 +875,8 @@ function decode_0ct(d::Integer)
     # doesn't need special handling for zero
     pt = i = div((sizeof(x)<<3)-leading_zeros(x)+5,3)
     digits = DIGITSs[Threads.threadid()]
-    while i > 0
-        digits[i] = '0'+(x&0x7)
+    @inbounds while i > 0
+        digits[i] = 48+(x&0x7)
         x >>= 3
         i -= 1
     end
@@ -888,8 +888,8 @@ function decode_dec(d::Integer)
     digits = DIGITSs[Threads.threadid()]
     @handle_zero x digits
     pt = i = Base.ndigits0z(x)
-    while i > 0
-        digits[i] = '0'+rem(x,10)
+    @inbounds while i > 0
+        digits[i] = 48+rem(x,10)
         x = div(x,10)
         i -= 1
     end
@@ -901,7 +901,7 @@ function decode_hex(d::Integer, symbols::AbstractArray{UInt8,1})
     digits = DIGITSs[Threads.threadid()]
     @handle_zero x digits
     pt = i = (sizeof(x)<<1)-(leading_zeros(x)>>2)
-    while i > 0
+    @inbounds while i > 0
         digits[i] = symbols[(x&0xf)+1]
         x >>= 4
         i -= 1
